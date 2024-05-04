@@ -1,0 +1,52 @@
+Manejo de archivos mediante servidor con express
+Consigna
+
+Realizar una clase de nombre “ProductManager”. Ésta debe poder agregar, consultar, modificar, eliminar un producto y manejarlo en persistencia de archivos (basado en entregable 1). Luego, mediante un servidor con express se accederán a las funciones desarrolladas en dicha clase “ProductManager”.
+
+Aspectos a incluir
+
+La clase debe contar con una variable this.path, el cual se inicializará desde el constructor y debe recibir la ruta a trabajar desde el momento de generar su instancia.
+
+Debe guardar objetos con el siguiente formato:
+id (se debe incrementar automáticamente, no enviarse desde el cuerpo)
+title (nombre del producto)
+description (descripción del producto)
+price (precio)
+thumbnail (ruta de imagen)
+code (código identificador)
+stock (número de piezas disponibles)
+
+
+Aspectos a incluir
+
+Debe tener un método addProduct el cual debe recibir un objeto con el formato previamente especificado, asignarle un id autoincrementable y guardarlo en el arreglo (recuerda siempre guardarlo como un array en el archivo).
+Debe tener un método getProducts, el cual debe leer el archivo de productos y devolver todos los productos en formato de arreglo.
+Debe tener un método getProductById, el cual debe recibir un id, y tras leer el archivo, debe buscar el producto con el id especificado y devolverlo en formato objeto
+
+Desarrollar un servidor express que, en su archivo app.js importe al archivo de productManager.
+El servidor debe contar con los siguientes endpoints:
+ruta ‘/products’, la cual debe leer el archivo de productos y devolverlos dentro de un objeto.
+ruta ‘/products/:pid’, la cual debe recibir por req.params el pid (product Id), y devolver sólo el producto solicitado, en lugar de todos los productos. 
+
+
+Formato del entregable
+Link al repositorio de Github con el proyecto completo, el cual debe incluir:
+carpeta src con app.js dentro y tu productManager dentro.
+package.json con la info del proyecto.
+NO INCLUIR LOS node_modules generados.
+
+PROCESO DE TESTING
+
+Servidores con express
+
+Desarrollar un servidor basado en express donde podamos hacer consultas a nuestro archivo de productos.
+
+Se instalarán las dependencias a partir del comando npm install
+Se echará a andar el servidor
+Se revisará que el archivo YA CUENTE CON AL MENOS DIEZ PRODUCTOS CREADOS al momento de su entrega, es importante para que los tutores no tengan que crear los productos por sí mismos, y así agilizar el proceso de tu evaluación.
+Se corroborará que el servidor esté corriendo en el puerto 8080.
+Se mandará a llamar desde el navegador a la url http://localhost:8080/products sin query, eso debe devolver todos los 10 productos.
+Se mandará a llamar desde el navegador a la url http://localhost:8080/products?limit=5 , eso debe devolver sólo los primeros 5 de los 10 productos.
+Se mandará a llamar desde el navegador a la url http://localhost:8080/products/2, eso debe devolver sólo el producto con id=2.
+Se mandará a llamar desde el navegador a la url http://localhost:8080/products/34123123, al no existir el id del producto, debe devolver un objeto con un error indicando que el producto no existe.
+
