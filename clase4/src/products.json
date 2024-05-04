@@ -1,0 +1,12 @@
+[
+    {"id": 1, "title": "Product 1", "description": "Description 1", "price": 10.0, "thumbnail": "url1", "code": "001", "stock": 100},
+    {"id": 2, "title": "Product 2", "description": "Description 2", "price": 20.0, "thumbnail": "url2", "code": "002", "stock": 200},
+    {"id": 3, "title": "Product 3", "description": "Description 3", "price": 30.0, "thumbnail": "url3", "code": "003", "stock": 300},
+    {"id": 4, "title": "Product 4", "description": "Description 4", "price": 40.0, "thumbnail": "url4", "code": "004", "stock": 400},
+    {"id": 5, "title": "Product 5", "description": "Description 5", "price": 50.0, "thumbnail": "url5", "code": "005", "stock": 500},
+    {"id": 6, "title": "Product 6", "description": "Description 6", "price": 60.0, "thumbnail": "url6", "code": "006", "stock": 600},
+    {"id": 7, "title": "Product 7", "description": "Description 7", "price": 70.0, "thumbnail": "url7", "code": "007", "stock": 700},
+    {"id": 8, "title": "Product 8", "description": "Description 8", "price": 80.0, "thumbnail": "url8", "code": "008", "stock": 800},
+    {"id": 9, "title": "Product 9", "description": "Description 9", "price": 90.0, "thumbnail": "url9", "code": "009", "stock": 900},
+    {"id": 10, "title": "Product 10", "description": "Description 10", "price": 100.0, "thumbnail": "url10", "code": "010", "stock": 1000}
+]
