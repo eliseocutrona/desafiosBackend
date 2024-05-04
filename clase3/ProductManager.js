@@ -1,68 +1,74 @@
-const fs = require('fs');
+// Importar el módulo fs con promesas para manejar operaciones de archivos.
+const fs = require('fs').promises;
 
+// Definir la clase ProductManager.
 class ProductManager {
+    // Constructor de la clase que toma una ruta de archivo como argumento.
     constructor(path) {
-        this.path = path; // Establece la ruta del archivo donde se almacenarán los productos.
-        this.init(); // Llama al método init para inicializar el archivo si no existe.
+        this.path = path; // Almacenar la ruta del archivo.
+        this.init(); // Iniciar la configuración inicial.
     }
 
-    init() {
-        if (!fs.existsSync(this.path)) { // Verifica si el archivo no existe en la ruta especificada.
-            fs.writeFileSync(this.path, JSON.stringify([])); // Si el archivo no existe, crea uno nuevo con un array vacío.
+    // Método asincrónico para inicializar el archivo de productos si no existe.
+    async init() {
+        // Verifica si el archivo existe; si no, crea un nuevo archivo con un array vacío.
+        if (!await fs.access(this.path).then(() => false).catch(() => true)) {
+            await fs.writeFile(this.path, '[]');
         }
     }
 
+    // Método para leer productos desde el archivo.
     async readProducts() {
-        const data = await fs.promises.readFile(this.path, 'utf-8'); // Lee los datos del archivo de productos de forma asíncrona.
-        return JSON.parse(data); // Convierte los datos de formato JSON a un objeto JavaScript y los retorna.
+        const data = await fs.readFile(this.path, 'utf-8'); // Leer datos del archivo.
+        return JSON.parse(data); // Convertir los datos de texto a JSON.
     }
 
+    // Método para escribir productos en el archivo.
     async writeProducts(products) {
-        await fs.promises.writeFile(this.path, JSON.stringify(products, null, 2)); // Escribe los productos actualizados en el archivo, formateando el JSON para mejorar la legibilidad.
+        await fs.writeFile(this.path, JSON.stringify(products, null, 2)); // Convertir el JSON a texto y escribirlo al archivo.
     }
 
-    async addProduct({ title, description, price, thumbnail, code, stock }) {
-        const products = await this.readProducts(); // Lee los productos actuales del archivo.
-        const id = products.length > 0 ? products[products.length - 1].id + 1 : 1; // Genera un nuevo ID para el producto, siendo consecutivo al último ID o 1 si la lista está vacía.
-        const newProduct = { id, title, description, price, thumbnail, code, stock }; // Crea un nuevo objeto de producto con los datos proporcionados y el nuevo ID.
-        products.push(newProduct); // Añade el nuevo producto al array de productos.
-        await this.writeProducts(products); // Guarda el array de productos actualizado en el archivo.
-        return newProduct; // Retorna el nuevo producto.
+    // Método para agregar un nuevo producto.
+    async addProduct(product) {
+        const products = await this.readProducts(); // Leer los productos existentes.
+        const id = products.length > 0 ? products[products.length - 1].id + 1 : 1; // Asignar un ID al nuevo producto.
+        const newProduct = { id, ...product }; // Crear un nuevo objeto de producto.
+        products.push(newProduct); // Añadir el nuevo producto al array de productos.
+        await this.writeProducts(products); // Guardar los cambios en el archivo.
+        return newProduct; // Devolver el nuevo producto.
     }
 
+    // Método para obtener todos los productos.
     async getProducts() {
-        return this.readProducts(); // Retorna todos los productos leyéndolos del archivo.
+        return this.readProducts(); // Leer y devolver todos los productos.
     }
 
+    // Método para obtener un producto por su ID.
     async getProductById(id) {
-        const products = await this.readProducts(); // Lee todos los productos.
-        const product = products.find(prod => prod.id === id); // Busca en el array el producto con el ID especificado.
-        if (!product) {
-            throw new Error('Product not found'); // Si no encuentra el producto, lanza un error.
-        }
-        return product; // Retorna el producto encontrado.
+        const products = await this.readProducts(); // Leer todos los productos.
+        const product = products.find(prod => prod.id === id); // Encontrar el producto por ID.
+        if (!product) throw new Error('Product not found'); // Si no existe, lanzar un error.
+        return product; // Devolver el producto encontrado.
     }
 
+    // Método para actualizar un producto.
     async updateProduct(id, productUpdate) {
-        let products = await this.readProducts(); // Lee los productos existentes.
-        let productIndex = products.findIndex(prod => prod.id === id); // Encuentra el índice del producto a actualizar.
-        if (productIndex === -1) {
-            throw new Error('Product not found'); // Si no encuentra el producto, lanza un error.
-        }
-        products[productIndex] = { ...products[productIndex], ...productUpdate }; // Actualiza el producto con los nuevos valores.
-        await this.writeProducts(products); // Guarda los cambios en el archivo.
-        return products[productIndex]; // Retorna el producto actualizado.
+        const products = await this.readProducts(); // Leer todos los productos.
+        const index = products.findIndex(prod => prod.id === id); // Encontrar el índice del producto.
+        if (index === -1) throw new Error('Product not found'); // Si no existe, lanzar un error.
+        products[index] = { ...products[index], ...productUpdate }; // Actualizar el producto.
+        await this.writeProducts(products); // Guardar los cambios en el archivo.
+        return products[index]; // Devolver el producto actualizado.
     }
 
+    // Método para eliminar un producto.
     async deleteProduct(id) {
-        let products = await this.readProducts(); // Lee los productos actuales.
-        const initialLength = products.length; // Guarda la longitud original del array.
-        products = products.filter(prod => prod.id !== id); // Filtra el array eliminando el producto con el ID dado.
-        if (initialLength === products.length) {
-            throw new Error('Product not found'); // Si la longitud no cambia, significa que no se encontró el producto, y lanza un error.
-        }
-        await this.writeProducts(products); // Escribe el array actualizado al archivo.
+        const products = await this.readProducts(); // Leer todos los productos.
+        const newProducts = products.filter(prod => prod.id !== id); // Filtrar el producto a eliminar.
+        if (products.length === newProducts.length) throw new Error('Product not found'); // Si no se encuentra, lanzar un error.
+        await this.writeProducts(newProducts); // Guardar los cambios en el archivo.
     }
 }
 
-module.exports = ProductManager; // Exporta la clase para que pueda ser utilizada en otros archivos.
+// Exportar la clase ProductManager para su uso en otros archivos.
+module.exports = ProductManager;
